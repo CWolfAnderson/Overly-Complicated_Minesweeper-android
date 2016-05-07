@@ -8,14 +8,36 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 
+import java.util.Arrays;
+
 /**
  * Created by christoph on 5/6/16.
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    // references to our images
+    private Integer[] mThumbIds;
 
-    public ImageAdapter(Context c) {
+
+
+
+
+
+            /*
+            {
+            R.drawable.number_1, R.drawable.number_2,
+            R.drawable.number_3, R.drawable.number_4,
+            R.drawable.number_5, R.drawable.number_6,
+            R.drawable.number_7, R.drawable.number_8,
+            R.drawable.empty, R.drawable.flag,
+            R.drawable.hidden, R.drawable.mine
+            };
+            */
+
+    public ImageAdapter(Context c, int row, int col) {
         mContext = c;
+        mThumbIds = new Integer[row * col];
+        Arrays.fill(mThumbIds, R.drawable.hidden);
     }
 
     public int getCount() {
@@ -36,9 +58,9 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
+            imageView.setLayoutParams(new GridView.LayoutParams(135, 135));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            imageView.setPadding(0, 0, 0, 0);
         } else {
             imageView = (ImageView) convertView;
         }
@@ -47,13 +69,5 @@ public class ImageAdapter extends BaseAdapter {
         return imageView;
     }
 
-    // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.number_1, R.drawable.number_2,
-            R.drawable.number_3, R.drawable.number_4,
-            R.drawable.number_5, R.drawable.number_6,
-            R.drawable.number_7, R.drawable.number_8,
-            R.drawable.empty, R.drawable.flag,
-            R.drawable.hidden, R.drawable.mine
-    };
+
 }
