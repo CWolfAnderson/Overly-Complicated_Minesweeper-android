@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     Integer cols = 9;
     Integer bombCount = 10;
 
+    Toast toast;
+
+
     Integer[] mThumbIds = {
             R.drawable.empty, R.drawable.number_1,
             R.drawable.number_2, R.drawable.number_3,
@@ -69,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
                     else if (numBombs == 9) {
                         currView.setImageResource(mThumbIds[numBombs]);
                         gridview.setOnItemClickListener(null);
+                        toast.setText("You Lose!");
+                        toast.show();
 
                     }
                     else {
@@ -121,7 +126,8 @@ public class MainActivity extends AppCompatActivity {
                 score.setText((bombCount - flags.size()) + "");
 
                 if(bombs.equals(flags)) {
-                    // stop timer and int  is the score
+                    toast.setText("You Win!");
+                    toast.show();
                     gridview.setOnItemClickListener(null);
                 }
             } catch (Exception e) {
@@ -137,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         gridview = (GridView) findViewById(R.id.gridview);
         score = (TextView) findViewById(R.id.score);
+
         configure();
     }
 
@@ -150,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         flags = new HashSet<>();
 
         score.setText(bombCount.toString());
+        toast = Toast.makeText(this, "", Toast.LENGTH_LONG);
 
         for (int count = 0; count < bombCount;) {
 
