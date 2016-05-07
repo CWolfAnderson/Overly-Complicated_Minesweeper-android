@@ -10,9 +10,8 @@ package com.anderson.christoph.overlycomplicatedminesweeper;
         import android.widget.AdapterView;
         import android.widget.GridView;
         import android.widget.ImageView;
-        import android.widget.Toast;
 
-        import java.util.ArrayList;
+        import java.util.ArrayList;1
         import java.util.HashMap;
         import java.util.HashSet;
         import java.util.Map;
