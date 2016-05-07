@@ -6,10 +6,13 @@
     android:layout_height="match_parent"
     tools:context="com.anderson.christoph.overlycomplicatedminesweeper.MainActivity">
 
-    <TextView
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"/>
+        android:id="@+id/imageButton"
+        android:src="@drawable/smile"
+        android:layout_alignParentTop="true"
+        android:onClick="configure"/>
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/gridview"
