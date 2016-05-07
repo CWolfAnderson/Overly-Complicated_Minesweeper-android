@@ -11,7 +11,7 @@ package com.anderson.christoph.overlycomplicatedminesweeper;
         import android.widget.GridView;
         import android.widget.ImageView;
 
-        import java.util.ArrayList;1
+        import java.util.ArrayList;
         import java.util.HashMap;
         import java.util.HashSet;
         import java.util.Map;
