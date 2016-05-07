@@ -9,6 +9,7 @@ package com.anderson.christoph.overlycomplicatedminesweeper;
         import android.widget.AdapterView;
         import android.widget.GridView;
         import android.widget.ImageView;
+        import android.widget.TextView;
         import android.widget.Toast;
 
         import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     Random random = new Random();
     GridView gridview;
+    TextView score;
     Map<Integer, Node> graph;
     Set<Integer> bombs;
     Set<Integer> flags;
@@ -107,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                     currView.setTag(new Integer(2));
                     currView.setImageResource(mThumbIds[10]);
                     flags.add(position);
-
                 }
                 else if (currView.getTag().equals(new Integer(2))) {
 
@@ -115,6 +116,9 @@ public class MainActivity extends AppCompatActivity {
                     currView.setImageResource(mThumbIds[11]);
                     flags.remove(position);
                 }
+
+
+                score.setText((bombCount - flags.size()) + "");
 
                 if(bombs.equals(flags)) {
                     // stop timer and int  is the score
@@ -132,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         gridview = (GridView) findViewById(R.id.gridview);
+        score = (TextView) findViewById(R.id.score);
         configure();
     }
 
@@ -143,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
         graph = new HashMap<>();
         bombs = new HashSet<>();
         flags = new HashSet<>();
+
+        score.setText(bombCount.toString());
 
         for (int count = 0; count < bombCount;) {
 
