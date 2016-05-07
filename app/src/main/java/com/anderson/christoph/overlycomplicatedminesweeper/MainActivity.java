@@ -148,38 +148,35 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
 
-                ImageView temp = (ImageView)v;
+                ImageView currView = (ImageView)v;
 
-                Log.d("test", "clicked? " + temp.getTag());
+                Log.d("test", "clicked? " + currView.getTag());
 
-                if (temp.getTag().equals( new Integer(0))) {
+                if (currView.getTag().equals( new Integer(0))) {
 
-                    temp.setTag(new Integer(1));
+                    currView.setTag(new Integer(1));
 
-                    Log.d("test", "clicked? " + temp.getTag());
+                    Log.d("test", "clicked? " + currView.getTag());
 
-                    int var = graph.get(position).numNeighborBombs;
+                    int numBombs = graph.get(position).numNeighborBombs;
 
-                    if (var == 0) {
+                    if (numBombs > 0 && numBombs < 9) currView.setImageResource(mThumbIds[numBombs]);
+                    else if (numBombs == 9) currView.setImageResource(mThumbIds[numBombs]);
+                    else {
 
-                        temp.setImageResource(mThumbIds[var]);
+                        currView.setImageResource(mThumbIds[numBombs]);
 
                         for (Integer i : graph.get(position).neighbors) {
 
-                            ImageView temp2 = ((ImageView)gridview.getChildAt(i));
+                            ImageView neighbor = ((ImageView)gridview.getChildAt(i));
 
-                            if (temp2.getTag().equals(new Integer(0))) {
+                            if (neighbor.getTag().equals(new Integer(0))) {
                                 Log.d("test", "clicked neighbor" + i);
-                                temp2.callOnClick();
+                                gridview.performItemClick(neighbor, i, neighbor.getId());
                             }
                         }
+                    }
 
-                    }
-                    else if (var > 0 && var < 9) temp.setImageResource(mThumbIds[var]);
-                    else {
-                        temp.setImageResource(mThumbIds[var]);
-                        // game over you lose
-                    }
                 }
             }
         });
