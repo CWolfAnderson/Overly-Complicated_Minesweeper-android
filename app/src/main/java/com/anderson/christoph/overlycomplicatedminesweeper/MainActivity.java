@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     GridView gridview;
     Map<Integer, Node> graph = new HashMap<Integer, Node>();
-    Set<Integer> tiles = new HashSet<Integer>();
     Set<Integer> bombs = new HashSet<Integer>();
 
     Integer[] mThumbIds = {
@@ -43,22 +42,6 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.number_4, R.drawable.number_5,
             R.drawable.number_6, R.drawable.number_7,
             R.drawable.number_8, R.drawable.mine };
-
-    /*
-    public void traverse(int startingIndex){
-        ArrayList<Node> neighbors = this.graph.get(startingIndex);
-        tiles.remove(startingIndex);
-        clicked[startingIndex] = true;
-        for(Node node : neighbors){
-            if(node.neighborBombs < 1){
-                traverse(node.index);
-            } else {
-
-            }
-
-        }
-    }
-    */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,10 +52,6 @@ public class MainActivity extends AppCompatActivity {
         Integer rows = 9;
         Integer cols = 9;
         Integer bombCount = 10;
-
-        gridview = (GridView) findViewById(R.id.gridview);
-        gridview.setNumColumns(9);
-
 
         for (int count = 0; count < bombCount;) {
 
@@ -128,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
             if ((xCor + 1 < cols) && (yCor - 1 > -1)) {
                 neighbors.add(index - rows + 1);
                 if (bombs.contains(index - rows + 1)) neighborBombs++;
-
             }
 
             // bombs don't care if their neighbors are bombs
@@ -137,11 +115,9 @@ public class MainActivity extends AppCompatActivity {
             graph.put(index, new Node(index, neighbors, neighborBombs));
         }
 
-        for (int index = 0; index < rows * cols; index++) {
-            tiles.add(index);
-        }
-
-        gridview.setAdapter(new ImageAdapter(this, 9, 9));
+        gridview = (GridView) findViewById(R.id.gridview);
+        gridview.setNumColumns(cols);
+        gridview.setAdapter(new ImageAdapter(this, rows, cols));
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
@@ -152,31 +128,35 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d("test", "clicked? " + currView.getTag());
 
-                if (currView.getTag().equals( new Integer(0))) {
+                try {
+                    if (currView.getTag().equals( new Integer(0))) {
 
-                    currView.setTag(new Integer(1));
+                        currView.setTag(new Integer(1));
 
-                    Log.d("test", "clicked? " + currView.getTag());
+                        Log.d("test", "clicked? " + currView.getTag());
 
-                    int numBombs = graph.get(position).numNeighborBombs;
+                        int numBombs = graph.get(position).numNeighborBombs;
 
-                    if (numBombs > 0 && numBombs < 9) currView.setImageResource(mThumbIds[numBombs]);
-                    else if (numBombs == 9) currView.setImageResource(mThumbIds[numBombs]);
-                    else {
+                        if (numBombs > 0 && numBombs < 9) currView.setImageResource(mThumbIds[numBombs]);
+                        else if (numBombs == 9) currView.setImageResource(mThumbIds[numBombs]);
+                        else {
 
-                        currView.setImageResource(mThumbIds[numBombs]);
+                            currView.setImageResource(mThumbIds[numBombs]);
 
-                        for (Integer i : graph.get(position).neighbors) {
+                            for (Integer i : graph.get(position).neighbors) {
 
-                            ImageView neighbor = ((ImageView)gridview.getChildAt(i));
+                                ImageView neighbor = ((ImageView)gridview.getChildAt(i));
 
-                            if (neighbor.getTag().equals(new Integer(0))) {
-                                Log.d("test", "clicked neighbor" + i);
-                                gridview.performItemClick(neighbor, i, neighbor.getId());
+                                if (neighbor.getTag().equals(new Integer(0))) {
+                                    Log.d("test", "clicked neighbor" + i);
+                                    gridview.performItemClick(neighbor, i, neighbor.getId());
+                                }
                             }
                         }
                     }
-
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
