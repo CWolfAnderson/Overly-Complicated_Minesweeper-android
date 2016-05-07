@@ -1,6 +1,5 @@
 package com.anderson.christoph.overlycomplicatedminesweeper;
 
-
         import android.annotation.TargetApi;
         import android.os.Build;
         import android.support.v7.app.AppCompatActivity;
@@ -20,11 +19,9 @@ package com.anderson.christoph.overlycomplicatedminesweeper;
         import java.util.Set;
 
 class Node {
-    public int index;
     public int numNeighborBombs;
     public ArrayList<Integer> neighbors;
-    public Node(int index, ArrayList<Integer> neighbors, int numNeighborBombs){
-        this.index = index;
+    public Node(ArrayList<Integer> neighbors, int numNeighborBombs){
         this.neighbors = neighbors;
         this.numNeighborBombs = numNeighborBombs;
     }
@@ -32,26 +29,120 @@ class Node {
 
 public class MainActivity extends AppCompatActivity {
 
+    Random random = new Random();
     GridView gridview;
-    Map<Integer, Node> graph = new HashMap<Integer, Node>();
-    Set<Integer> bombs = new HashSet<Integer>();
+    Map<Integer, Node> graph;
+    Set<Integer> bombs;
+    Set<Integer> flags;
+    Integer rows = 9;
+    Integer cols = 9;
+    Integer bombCount = 10;
 
     Integer[] mThumbIds = {
             R.drawable.empty, R.drawable.number_1,
             R.drawable.number_2, R.drawable.number_3,
             R.drawable.number_4, R.drawable.number_5,
             R.drawable.number_6, R.drawable.number_7,
-            R.drawable.number_8, R.drawable.mine };
+            R.drawable.number_8, R.drawable.mine,
+            R.drawable.flag, R.drawable.hidden};
+
+    AdapterView.OnItemClickListener listenerShort = new AdapterView.OnItemClickListener() {
+        @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
+        public void onItemClick(AdapterView<?> parent, View v,
+                                int position, long id) {
+
+            ImageView currView = (ImageView)v;
+
+            try {
+                if (currView.getTag().equals( new Integer(0))) {
+
+                    currView.setTag(new Integer(1));
+
+                    int numBombs = graph.get(position).numNeighborBombs;
+
+                    if (numBombs > 0 && numBombs < 9) {
+                        currView.setImageResource(mThumbIds[numBombs]);
+
+                    }
+                    else if (numBombs == 9) {
+                        currView.setImageResource(mThumbIds[numBombs]);
+                        gridview.setOnItemClickListener(null);
+
+                    }
+                    else {
+
+                        currView.setImageResource(mThumbIds[numBombs]);
+
+                        for (Integer i : graph.get(position).neighbors) {
+
+                            ImageView neighbor = ((ImageView)gridview.getChildAt(i));
+
+                            if (neighbor.getTag().equals(new Integer(0))) {
+                                gridview.performItemClick(neighbor, i, neighbor.getId());
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    AdapterView.OnItemLongClickListener listenerLong = new AdapterView.OnItemLongClickListener() {
+
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+            ImageView currView = (ImageView) view;
+
+            Log.d("test", "clicked? " + currView.getTag());
+
+            if (gridview.getOnItemClickListener() == null) return false;
+
+            try {
+                if (currView.getTag().equals(new Integer(0))) {
+
+                    currView.setTag(new Integer(2));
+                    currView.setImageResource(mThumbIds[10]);
+                    flags.add(position);
+
+                }
+                else if (currView.getTag().equals(new Integer(2))) {
+
+                    currView.setTag(new Integer(0));
+                    currView.setImageResource(mThumbIds[11]);
+                    flags.remove(position);
+                }
+
+                if(bombs.equals(flags)) {
+                    // stop timer and int  is the score
+                    gridview.setOnItemClickListener(null);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Random random = new Random();
+        gridview = (GridView) findViewById(R.id.gridview);
+        configure();
+    }
 
-        Integer rows = 9;
-        Integer cols = 9;
-        Integer bombCount = 10;
+    public void configure(View view){
+        configure();
+    }
+    public void configure(){
+
+        graph = new HashMap<>();
+        bombs = new HashSet<>();
+        flags = new HashSet<>();
 
         for (int count = 0; count < bombCount;) {
 
@@ -112,53 +203,12 @@ public class MainActivity extends AppCompatActivity {
             // bombs don't care if their neighbors are bombs
             if(bombs.contains(index)) neighborBombs = 9;
 
-            graph.put(index, new Node(index, neighbors, neighborBombs));
+            graph.put(index, new Node(neighbors, neighborBombs));
         }
 
-        gridview = (GridView) findViewById(R.id.gridview);
         gridview.setNumColumns(cols);
         gridview.setAdapter(new ImageAdapter(this, rows, cols));
-
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
-
-                ImageView currView = (ImageView)v;
-
-                Log.d("test", "clicked? " + currView.getTag());
-
-                try {
-                    if (currView.getTag().equals( new Integer(0))) {
-
-                        currView.setTag(new Integer(1));
-
-                        Log.d("test", "clicked? " + currView.getTag());
-
-                        int numBombs = graph.get(position).numNeighborBombs;
-
-                        if (numBombs > 0 && numBombs < 9) currView.setImageResource(mThumbIds[numBombs]);
-                        else if (numBombs == 9) currView.setImageResource(mThumbIds[numBombs]);
-                        else {
-
-                            currView.setImageResource(mThumbIds[numBombs]);
-
-                            for (Integer i : graph.get(position).neighbors) {
-
-                                ImageView neighbor = ((ImageView)gridview.getChildAt(i));
-
-                                if (neighbor.getTag().equals(new Integer(0))) {
-                                    Log.d("test", "clicked neighbor" + i);
-                                    gridview.performItemClick(neighbor, i, neighbor.getId());
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        gridview.setOnItemLongClickListener(listenerLong);
+        gridview.setOnItemClickListener(listenerShort);
     }
 }
