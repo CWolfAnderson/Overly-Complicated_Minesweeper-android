@@ -1,6 +1,8 @@
 package com.anderson.christoph.overlycomplicatedminesweeper;
 
 
+        import android.annotation.TargetApi;
+        import android.os.Build;
         import android.support.v7.app.AppCompatActivity;
         import android.os.Bundle;
         import android.util.Log;
@@ -142,28 +144,43 @@ public class MainActivity extends AppCompatActivity {
         gridview.setAdapter(new ImageAdapter(this, 9, 9));
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
 
                 ImageView temp = (ImageView)v;
-                temp.setClickable(false);
 
-                int var = graph.get(position).numNeighborBombs;
+                Log.d("test", "clicked? " + temp.getTag());
 
-                temp.setImageResource(mThumbIds[var]);
+                if (temp.getTag().equals( new Integer(0))) {
 
-                if(var == 0) {
+                    temp.setTag(new Integer(1));
 
-                    for(Integer i: graph.get(position).neighbors) {
-                        if (gridview.getChildAt(i).isClickable()) {
-                            Log.d("test", "clicked " + i);
-                            gridview.getChildAt(i).performClick();
+                    Log.d("test", "clicked? " + temp.getTag());
+
+                    int var = graph.get(position).numNeighborBombs;
+
+                    if (var == 0) {
+
+                        temp.setImageResource(mThumbIds[var]);
+
+                        for (Integer i : graph.get(position).neighbors) {
+
+                            ImageView temp2 = ((ImageView)gridview.getChildAt(i));
+
+                            if (temp2.getTag().equals(new Integer(0))) {
+                                Log.d("test", "clicked neighbor" + i);
+                                temp2.callOnClick();
+                            }
                         }
+
+                    }
+                    else if (var > 0 && var < 9) temp.setImageResource(mThumbIds[var]);
+                    else {
+                        temp.setImageResource(mThumbIds[var]);
+                        // game over you lose
                     }
                 }
-
-                Toast.makeText(MainActivity.this, "" + position,
-                        Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -62,10 +62,10 @@ public class ImageAdapter extends BaseAdapter {
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(0, 0, 0, 0);
         } else {
-            imageView = (ImageView) convertView;
+            imageView = (ImageView) convertView;;
         }
-
         imageView.setImageResource(mThumbIds[position]);
+        imageView.setTag(new Integer(0));
         return imageView;
     }
 
