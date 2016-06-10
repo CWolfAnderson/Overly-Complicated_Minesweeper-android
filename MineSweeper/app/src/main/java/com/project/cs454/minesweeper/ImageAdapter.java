@@ -17,22 +17,6 @@ public class ImageAdapter extends BaseAdapter {
     // references to our images
     private Integer[] mThumbIds;
 
-
-
-
-
-
-            /*
-            {
-            R.drawable.number_1, R.drawable.number_2,
-            R.drawable.number_3, R.drawable.number_4,
-            R.drawable.number_5, R.drawable.number_6,
-            R.drawable.number_7, R.drawable.number_8,
-            R.drawable.empty, R.drawable.flag,
-            R.drawable.hidden, R.drawable.mine
-            };
-            */
-
     public ImageAdapter(Context c, int row, int col) {
         mContext = c;
         mThumbIds = new Integer[row * col];
@@ -57,7 +41,7 @@ public class ImageAdapter extends BaseAdapter {
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
             imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(135, 135));
+            imageView.setLayoutParams(new GridView.LayoutParams(150, 150));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setPadding(0, 0, 0, 0);
         } else {

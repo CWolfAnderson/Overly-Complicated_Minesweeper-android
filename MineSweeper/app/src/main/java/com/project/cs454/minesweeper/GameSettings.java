@@ -15,6 +15,7 @@ public class GameSettings extends AppCompatActivity {
     private final String EASY = "EASY";
     private final String MEDIUM = "MEDIUM";
     private final String HARD = "HARD";
+    private final String CUSTOM = "CUSTOM";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +63,14 @@ public class GameSettings extends AppCompatActivity {
         customButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(GameSettings.this, HighScore.class);
-                //startActivity(intent);
+
+                // THIS SHOULD GO TO A CUSTOM MENU OR SOME SORT OF POP UP TO SET SIZE AND NUMBER OF MINES
+
+                Intent intent = new Intent(GameSettings.this, Game.class);
+                intent.putExtra(GAME_MODE, CUSTOM);
+                intent.putExtra("SIZE", EASY);
+                intent.putExtra("BOMBS", 20);
+                startActivity(intent);
 
             }
         });

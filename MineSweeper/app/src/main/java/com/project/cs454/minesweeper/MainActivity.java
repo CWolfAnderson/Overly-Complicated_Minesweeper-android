@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.content_game);
         gridview = (GridView) findViewById(R.id.gridview);
         score = (TextView) findViewById(R.id.score);
 
