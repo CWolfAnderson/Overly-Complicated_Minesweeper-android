@@ -198,11 +198,6 @@ public class Game extends AppCompatActivity {
         configure();
     }
 
-    public void configure(View view){
-        configure();
-    }
-
-
     public void configure(){
 
         graph = new HashMap<>();
@@ -240,33 +235,33 @@ public class Game extends AppCompatActivity {
             }
             // upper
             if (yCor - 1 > -1) {
-                neighbors.add(index - rows);
-                if (bombs.contains(index - rows)) neighborBombs++;
+                neighbors.add(index - cols);
+                if (bombs.contains(index - cols)) neighborBombs++;
             }
             // lower
             if (yCor + 1 < rows) {
-                neighbors.add(index + rows);
-                if (bombs.contains(index + rows)) neighborBombs++;
+                neighbors.add(index + cols);
+                if (bombs.contains(index + cols)) neighborBombs++;
             }
             // lower left
             if ((xCor - 1 > -1) && (yCor + 1 < rows)) {
-                neighbors.add(index + rows - 1);
-                if (bombs.contains(index + rows - 1)) neighborBombs++;
+                neighbors.add(index + cols - 1);
+                if (bombs.contains(index + cols - 1)) neighborBombs++;
             }
             // lower right
             if ((yCor + 1 < rows) && (xCor + 1 < cols)) {
-                neighbors.add(index + rows + 1);
-                if (bombs.contains(index + rows + 1)) neighborBombs++;
+                neighbors.add(index + cols + 1);
+                if (bombs.contains(index + cols + 1)) neighborBombs++;
             }
             // upper left
             if ((xCor - 1 > -1) && (yCor - 1 > -1)) {
-                neighbors.add(index - rows - 1);
-                if (bombs.contains(index - rows - 1)) neighborBombs++;
+                neighbors.add(index - cols - 1);
+                if (bombs.contains(index - cols - 1)) neighborBombs++;
             }
             // upper right
             if ((xCor + 1 < cols) && (yCor - 1 > -1)) {
-                neighbors.add(index - rows + 1);
-                if (bombs.contains(index - rows + 1)) neighborBombs++;
+                neighbors.add(index - cols + 1);
+                if (bombs.contains(index - cols + 1)) neighborBombs++;
             }
 
             // bombs don't care if their neighbors are bombs
