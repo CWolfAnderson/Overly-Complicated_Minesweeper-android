@@ -12,21 +12,36 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true">
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:weightSum="1">
 
         <Button
             android:id="@+id/scoresButton"
-            android:layout_width="wrap_content"
+            android:layout_width="201dp"
             android:layout_height="wrap_content"
             android:text="@string/button_scores"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:height="100dp"
+            android:width="100dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="30sp"
+            android:background="#00a4eb"
+            android:textColor="#ffffff"
+            android:singleLine="false"/>
 
         <Button
             android:id="@+id/playButton"
-            android:layout_width="wrap_content"
+            android:layout_width="201dp"
             android:layout_height="wrap_content"
             android:text="@string/button_play"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:width="100dp"
+            android:height="100dp"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
+            android:background="#14ae00"
+            android:textColor="#ffffff"/>
     </LinearLayout>
 
 </RelativeLayout>
