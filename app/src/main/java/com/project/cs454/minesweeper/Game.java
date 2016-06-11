@@ -256,7 +256,7 @@ public class Game extends AppCompatActivity {
         if (difficulty.equals("EASY")) {
             rows = 12;
             cols = 8;
-            bombCount = 1;
+            bombCount = 10;
         }
         if (difficulty.equals("MEDIUM")) {
             rows = 16;
