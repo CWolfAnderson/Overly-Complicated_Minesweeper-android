@@ -259,14 +259,14 @@ public class Game extends AppCompatActivity {
             bombCount = 10;
         }
         if (difficulty.equals("MEDIUM")) {
-            rows = 16;
-            cols = 12;
-            bombCount = 40;
+            rows = 12;
+            cols = 16;
+            bombCount = 25;
         }
         if (difficulty.equals("HARD")) {
-            rows = 32;
+            rows = 12;
             cols = 24;
-            bombCount = 99;
+            bombCount = 55;
         }
     }
 
