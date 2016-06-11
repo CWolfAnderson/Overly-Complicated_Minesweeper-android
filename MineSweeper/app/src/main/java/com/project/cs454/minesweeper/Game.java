@@ -56,7 +56,6 @@ public class Game extends AppCompatActivity {
 
     boolean gameStarted = false;
 
-
     long elapsedMillis;
 
     private Chronometer chronometer;
@@ -99,6 +98,9 @@ public class Game extends AppCompatActivity {
                     if (numBombs == 9) {
                         gridview.setOnItemClickListener(null);
                         chronometer.stop();
+
+                        ImageView smiley = (ImageView) findViewById(R.id.imageButton);
+                        smiley.setImageResource(R.drawable.dead);
 
                         toast.setText("You Lose!");
                         toast.show();
@@ -169,6 +171,8 @@ public class Game extends AppCompatActivity {
 
                     popup();
 
+                    ImageView smiley = (ImageView) findViewById(R.id.imageButton);
+                    smiley.setImageResource(R.drawable.glasses);
 
                     toast.setText("You Win!");
                     toast.show();
@@ -233,11 +237,14 @@ public class Game extends AppCompatActivity {
         score = (TextView) findViewById(R.id.score);
         chronometer = (Chronometer) findViewById(R.id.chronometer);
 
-
         configure();
     }
 
     public void configure(View view){
+
+        ImageView smiley = (ImageView) findViewById(R.id.imageButton);
+        smiley.setImageResource(R.drawable.smile);
+
         configure();
     }
 
