@@ -5,6 +5,7 @@ package com.project.cs454.minesweeper;
         import android.content.DialogInterface;
         import android.content.Intent;
 
+        import android.os.AsyncTask;
         import android.os.Build;
         import android.os.Bundle;
 
@@ -23,6 +24,16 @@ package com.project.cs454.minesweeper;
         import android.widget.TextView;
         import android.widget.Toast;
 
+        import org.json.JSONArray;
+        import org.json.JSONException;
+        import org.json.JSONObject;
+
+        import java.io.BufferedReader;
+        import java.io.IOException;
+        import java.io.InputStream;
+        import java.io.InputStreamReader;
+        import java.net.HttpURLConnection;
+        import java.net.URL;
         import java.util.ArrayList;
         import java.util.HashMap;
         import java.util.HashSet;
@@ -41,7 +52,7 @@ public class Game extends AppCompatActivity {
     Set<Integer> flags;
     Integer rows = 1;
     Integer cols = 1;
-    Integer bombCount = 10;
+    Integer bombCount = 1;
 
     boolean gameStarted = false;
 
@@ -52,7 +63,7 @@ public class Game extends AppCompatActivity {
 
     Toast toast;
 
-    String userName;
+    String userName = "";
 
 
     Integer[] mThumbIds = {
@@ -159,13 +170,6 @@ public class Game extends AppCompatActivity {
                     popup();
 
 
-                    // insert API Call
-
-                    // elapsedMillis
-                    // difficulty
-                    // userName
-
-
                     toast.setText("You Win!");
                     toast.show();
                     gridview.setOnItemClickListener(null);
@@ -194,7 +198,14 @@ public class Game extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                userName = input.getText().toString();
+                userName += input.getText().toString();
+                Log.d("InsertTask", "userName was set to " + userName);
+
+
+                InsertScoreTask insertScoreTask = new InsertScoreTask();
+                insertScoreTask.execute(userName, difficulty, ""+elapsedMillis);
+
+
             }
         });
 
@@ -238,7 +249,7 @@ public class Game extends AppCompatActivity {
         if (difficulty.equals("EASY")) {
             rows = 12;
             cols = 8;
-            bombCount = 10;
+            bombCount = 1;
         }
         if (difficulty.equals("MEDIUM")) {
             rows = 16;
@@ -338,5 +349,70 @@ public class Game extends AppCompatActivity {
 
         gridview.setOnItemLongClickListener(listenerLong);
         gridview.setOnItemClickListener(listenerShort);
+    }
+
+    public class InsertScoreTask extends AsyncTask<String, Void, String[]> {
+
+        private final String LOG_TAG = InsertScoreTask.class.getSimpleName();
+        @Override
+        protected String[] doInBackground(String... params) {
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            String scoreJsonStr = null;
+
+
+            String name = params[0],
+                    difficulty = params[1],
+                    score = params[2];
+            try {
+                URL url = new URL("http://tylerthome.com/minesweeper/"+difficulty+"/"+name+"/"+score);
+
+                Log.d(LOG_TAG, "Call to HTTP API: " + url);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    return null;
+                }
+                scoreJsonStr = buffer.toString();
+                Log.d(LOG_TAG, "json response from insert: " + scoreJsonStr);
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Error ", e);
+                return null;
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e(LOG_TAG, "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+            if (result != null) {
+                for(String s : result){
+                    Log.d(LOG_TAG, "RECEiVED RESULT " + s);
+                }
+            }
+        }
     }
 }

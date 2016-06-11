@@ -74,13 +74,13 @@ public class HighScore extends AppCompatActivity {
 
             String[] resultStrs = new String[scoreArray.length()];
             for(int i = 0; i < scoreArray.length(); i++) {
-                String scoreTitle, nameTitle;
+                String scoreTitle, nameTitle, difficulty;
                 JSONObject score = scoreArray.getJSONObject(i);
                 scoreTitle = score.getString("score");
-                JSONObject name = scoreArray.getJSONObject(i);
-                nameTitle = name.getString("name");
+                nameTitle = score.getString("name");
+                difficulty = score.getString("difficulty");
 
-                resultStrs[i] = nameTitle + " : " + scoreTitle;
+                resultStrs[i] = nameTitle + " : " + scoreTitle + " - " + difficulty;
             }
             return resultStrs;
 
