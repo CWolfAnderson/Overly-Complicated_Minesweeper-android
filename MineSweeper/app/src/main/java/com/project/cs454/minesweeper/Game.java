@@ -1,6 +1,8 @@
 package com.project.cs454.minesweeper;
 
         import android.annotation.TargetApi;
+        import android.app.AlertDialog;
+        import android.content.DialogInterface;
         import android.content.Intent;
 
         import android.os.Build;
@@ -9,11 +11,13 @@ package com.project.cs454.minesweeper;
         import android.os.SystemClock;
         import android.support.v7.app.AppCompatActivity;
 
+        import android.text.InputType;
         import android.util.Log;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.AdapterView;
         import android.widget.Chronometer;
+        import android.widget.EditText;
         import android.widget.GridView;
         import android.widget.ImageView;
         import android.widget.TextView;
@@ -40,11 +44,15 @@ public class Game extends AppCompatActivity {
     Integer bombCount = 10;
 
     boolean gameStarted = false;
+
+
     long elapsedMillis;
 
     private Chronometer chronometer;
 
     Toast toast;
+
+    String userName;
 
 
     Integer[] mThumbIds = {
@@ -148,6 +156,16 @@ public class Game extends AppCompatActivity {
 
                     Log.d("test", elapsedMillis + "");
 
+                    popup();
+
+
+                    // insert API Call
+
+                    // elapsedMillis
+                    // difficulty
+                    // userName
+
+
                     toast.setText("You Win!");
                     toast.show();
                     gridview.setOnItemClickListener(null);
@@ -158,6 +176,30 @@ public class Game extends AppCompatActivity {
             return true;
         }
     };
+
+
+    public void popup() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter Name        Score: " + elapsedMillis);
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        builder.setView(input);
+
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                userName = input.getText().toString();
+            }
+        });
+
+        builder.show();
+    }
 
     class Node {
         public int numNeighborBombs;
@@ -191,7 +233,7 @@ public class Game extends AppCompatActivity {
     public void setGridSizeFromMode() {
 
         Intent intent = getIntent();
-        String difficulty = intent.getStringExtra("GAME_MODE");
+        difficulty = intent.getStringExtra("GAME_MODE");
 
         if (difficulty.equals("EASY")) {
             rows = 12;
@@ -207,27 +249,6 @@ public class Game extends AppCompatActivity {
             rows = 32;
             cols = 24;
             bombCount = 99;
-        }
-
-        if (difficulty.equals("CUSTOM")) {
-
-            String size = intent.getStringExtra("SIZE");
-
-
-            if (size.equals("EASY")) {
-                rows = 12;
-                cols = 8;
-            }
-            if (size.equals("MEDIUM")) {
-                rows = 16;
-                cols = 12;
-            }
-            if (size.equals("HARD")) {
-                rows = 32;
-                cols = 24;
-            }
-
-            bombCount = intent.getIntExtra("BOMBS", 10);
         }
     }
 
@@ -317,6 +338,5 @@ public class Game extends AppCompatActivity {
 
         gridview.setOnItemLongClickListener(listenerLong);
         gridview.setOnItemClickListener(listenerShort);
-
     }
 }

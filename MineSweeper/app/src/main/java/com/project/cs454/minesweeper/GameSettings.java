@@ -56,26 +56,6 @@ public class GameSettings extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
-        Button customButton = (Button) findViewById(R.id.customButton);
-        customButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // THIS SHOULD GO TO A CUSTOM MENU OR SOME SORT OF POP UP TO SET SIZE AND NUMBER OF MINES
-
-                Intent intent = new Intent(GameSettings.this, Game.class);
-                intent.putExtra(GAME_MODE, CUSTOM);
-                intent.putExtra("SIZE", EASY);
-                intent.putExtra("BOMBS", 20);
-                startActivity(intent);
-
-            }
-        });
-
-
     }
 
 }
