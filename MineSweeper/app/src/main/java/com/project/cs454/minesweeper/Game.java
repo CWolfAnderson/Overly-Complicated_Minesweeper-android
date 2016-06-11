@@ -1,28 +1,30 @@
 package com.project.cs454.minesweeper;
 
-import android.annotation.TargetApi;
-import android.content.Intent;
+        import android.annotation.TargetApi;
+        import android.content.Intent;
 
-import android.os.Build;
-import android.os.Bundle;
+        import android.os.Build;
+        import android.os.Bundle;
 
-import android.support.v7.app.AppCompatActivity;
+        import android.os.SystemClock;
+        import android.support.v7.app.AppCompatActivity;
 
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+        import android.util.Log;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.AdapterView;
+        import android.widget.Chronometer;
+        import android.widget.GridView;
+        import android.widget.ImageView;
+        import android.widget.TextView;
+        import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+        import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.HashSet;
+        import java.util.Map;
+        import java.util.Random;
+        import java.util.Set;
 
 public class Game extends AppCompatActivity {
 
@@ -36,6 +38,11 @@ public class Game extends AppCompatActivity {
     Integer rows = 1;
     Integer cols = 1;
     Integer bombCount = 10;
+
+    boolean gameStarted = false;
+    long elapsedMillis;
+
+    private Chronometer chronometer;
 
     Toast toast;
 
@@ -56,26 +63,29 @@ public class Game extends AppCompatActivity {
             ImageView currView = (ImageView)v;
 
             try {
+
+                if (!gameStarted) {
+                    chronometer.setBase(SystemClock.elapsedRealtime());
+                    chronometer.start();
+                    gameStarted = true;
+                }
+
                 if (currView.getTag().equals( new Integer(0))) {
 
                     currView.setTag(new Integer(1));
 
                     int numBombs = graph.get(position).numNeighborBombs;
+                    currView.setImageResource(mThumbIds[numBombs]);
 
-                    if (numBombs > 0 && numBombs < 9) {
-                        currView.setImageResource(mThumbIds[numBombs]);
-
-                    }
-                    else if (numBombs == 9) {
-                        currView.setImageResource(mThumbIds[numBombs]);
+                    if (numBombs == 9) {
                         gridview.setOnItemClickListener(null);
+                        chronometer.stop();
+
                         toast.setText("You Lose!");
                         toast.show();
 
                     }
-                    else {
-
-                        currView.setImageResource(mThumbIds[numBombs]);
+                    else if (numBombs == 0) {
 
                         for (Integer i : graph.get(position).neighbors) {
 
@@ -106,6 +116,13 @@ public class Game extends AppCompatActivity {
             if (gridview.getOnItemClickListener() == null) return false;
 
             try {
+
+                if (!gameStarted) {
+                    chronometer.setBase(SystemClock.elapsedRealtime());
+                    chronometer.start();
+                    gameStarted = true;
+                }
+
                 if (currView.getTag().equals(new Integer(0))) {
 
                     currView.setTag(new Integer(2));
@@ -121,10 +138,16 @@ public class Game extends AppCompatActivity {
                     flags.remove(position);
                 }
 
-
                 score.setText((bombCount - flags.size()) + "");
 
                 if(bombs.equals(flags)) {
+
+                    chronometer.stop();
+
+                    elapsedMillis = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 1000;
+
+                    Log.d("test", elapsedMillis + "");
+
                     toast.setText("You Win!");
                     toast.show();
                     gridview.setOnItemClickListener(null);
@@ -149,7 +172,23 @@ public class Game extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.content_game);
+        setContentView(R.layout.activity_game);
+
+        setGridSizeFromMode();
+
+        gridview = (GridView) findViewById(R.id.gridview);
+        score = (TextView) findViewById(R.id.score);
+        chronometer = (Chronometer) findViewById(R.id.chronometer);
+
+
+        configure();
+    }
+
+    public void configure(View view){
+        configure();
+    }
+
+    public void setGridSizeFromMode() {
 
         Intent intent = getIntent();
         String difficulty = intent.getStringExtra("GAME_MODE");
@@ -174,32 +213,29 @@ public class Game extends AppCompatActivity {
 
             String size = intent.getStringExtra("SIZE");
 
-            if (size.equals("HARD")) {
-                rows = 48;
-                cols = 32;
-            }
-            if (size.equals("MEDIUM")) {
-                rows = 24;
-                cols = 16;
-            }
+
             if (size.equals("EASY")) {
                 rows = 12;
                 cols = 8;
             }
+            if (size.equals("MEDIUM")) {
+                rows = 16;
+                cols = 12;
+            }
+            if (size.equals("HARD")) {
+                rows = 32;
+                cols = 24;
+            }
+
             bombCount = intent.getIntExtra("BOMBS", 10);
         }
-
-        gridview = (GridView) findViewById(R.id.gridview);
-        score = (TextView) findViewById(R.id.score);
-
-        configure();
-    }
-
-    public void configure(View view){
-        configure();
     }
 
     public void configure(){
+
+        gameStarted = false;
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        elapsedMillis = 0;
 
         graph = new HashMap<>();
         bombs = new HashSet<>();
@@ -218,7 +254,8 @@ public class Game extends AppCompatActivity {
             }
         }
 
-        for (int index = 0, neighborBombs = 0; index < rows * cols; index++, neighborBombs = 0) {
+        for (int index = 0, neighborBombs = 0; index < (rows * cols); index++, neighborBombs = 0) {
+
             ArrayList<Integer> neighbors = new ArrayList<Integer>();
 
             int xCor = index % cols;
@@ -245,7 +282,7 @@ public class Game extends AppCompatActivity {
                 if (bombs.contains(index + cols)) neighborBombs++;
             }
             // lower left
-            if ((xCor - 1 > -1) && (yCor + 1 < rows)) {
+            if ((yCor + 1 < rows) && (xCor - 1 > -1)) {
                 neighbors.add(index + cols - 1);
                 if (bombs.contains(index + cols - 1)) neighborBombs++;
             }
@@ -255,12 +292,12 @@ public class Game extends AppCompatActivity {
                 if (bombs.contains(index + cols + 1)) neighborBombs++;
             }
             // upper left
-            if ((xCor - 1 > -1) && (yCor - 1 > -1)) {
+            if ((yCor - 1 > -1) && (xCor - 1 > -1)) {
                 neighbors.add(index - cols - 1);
                 if (bombs.contains(index - cols - 1)) neighborBombs++;
             }
             // upper right
-            if ((xCor + 1 < cols) && (yCor - 1 > -1)) {
+            if ((yCor - 1 > -1) && (xCor + 1 < cols)) {
                 neighbors.add(index - cols + 1);
                 if (bombs.contains(index - cols + 1)) neighborBombs++;
             }
@@ -272,12 +309,14 @@ public class Game extends AppCompatActivity {
         }
 
         gridview.setNumColumns(cols);
+
+        ViewGroup.LayoutParams layoutParams = gridview.getLayoutParams();
+
+        layoutParams.width = 175 * cols;
+        gridview.setAdapter(new ImageAdapter(this, rows, cols));
+
         gridview.setOnItemLongClickListener(listenerLong);
         gridview.setOnItemClickListener(listenerShort);
 
-        ViewGroup.LayoutParams layoutParams = gridview.getLayoutParams();
-        layoutParams.width = 175 * cols;
-
-        gridview.setAdapter(new ImageAdapter(this, rows, cols));
     }
 }

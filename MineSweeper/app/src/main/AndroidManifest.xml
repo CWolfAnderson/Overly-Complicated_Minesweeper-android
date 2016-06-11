@@ -15,7 +15,7 @@
             android:name=".SplashScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            android:theme="@android:style/Theme.Black.NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,8 +28,8 @@
         <activity
             android:name=".MainMenu"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- High Scores -->
 
@@ -37,12 +37,12 @@
             android:name=".HighScore"
             android:label="@string/title_activity_high_score"
             android:parentActivityName=".MainMenu"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.project.cs454.minesweeper.MainMenu" />
         </activity>
-
 
         <!-- Game Setup -->
 
@@ -50,12 +50,12 @@
             android:name=".GameSettings"
             android:label="@string/title_activity_game_settings"
             android:parentActivityName=".MainMenu"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.project.cs454.minesweeper.MainMenu" />
         </activity>
-
 
         <!-- Game -->
 
